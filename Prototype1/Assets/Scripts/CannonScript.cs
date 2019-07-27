@@ -7,18 +7,18 @@ public class CannonScript : MonoBehaviour
 
     public GameObject[] bubbles; // Game object bubbles
     public GameObject dotTrailPrefab; // Dot trail prefab
-    public BulletBubbleScript bullet; // Bullet bubble
+    public BulletBubbleScript bubble; // Bullet bubble
 
     private bool mouseDown = false; // On click
     private List<Vector2> dotsTrail; // List of dots trail
-    private List<GameObject> dotsPool; //
+    private List<GameObject> dotsPool; // Pool for dots - 
     private int maxDots = 30; // Maximum number of dots
 
-    private float dotGap = 0.20f; // The gap between dots
-    private float bulletProgress = 0.0f; // How far the bullet will progress
-    private float bulletIncrement = 0.0f; // Bullet increment
+    private float dotGap = 0.30f; // The gap between dots
+    private float bubbleProgress = 0.0f; // How far the bullet will progress - destroy at where the trail ends
+    private float bulletIncrement = 0.0f; // Bubble increment
 
-    private int typeOfBalls = 0;
+    private int type = 0;
 
 
     // Use this for initialization
@@ -27,54 +27,56 @@ public class CannonScript : MonoBehaviour
 
         dotsTrail = new List<Vector2>(); // 
 
-        dotsPool = new List<GameObject>(); //
+        dotsPool = new List<GameObject>(); // Pool of dots
 
 
-        // Seting up a while loop for the dot trail fading
+        // Setting up dots' alpha so they become transparent as they progress
         var i = 0;
 
-        var alpha = 1.0f / maxDots;
+        var alpha = 1.0f / maxDots; // 
 
         var startAlpha = 1.0f;
 
+
         while (i < maxDots)
         {
-            var dot = Instantiate(dotTrailPrefab) as GameObject;
+            var dot = Instantiate(dotTrailPrefab) as GameObject; // Instantiating the dot prefab
 
-            var sp = dot.GetComponent<SpriteRenderer>();
+            var sp = dot.GetComponent<SpriteRenderer>(); // Retrieving the 'SpriteRenderer' Component
 
-            var c = sp.color;
-
-
-            c.a = startAlpha - alpha;
-
-            startAlpha -= alpha;
-
-            sp.color = c;
+            var c = sp.color; // Spriwtes colour
 
 
-            dot.SetActive(false);
+            c.a = startAlpha - alpha; // Reducing the sprite's alpha
 
-            dotsPool.Add(dot);
+            startAlpha -= alpha; // //
+
+            sp.color = c; // //
+
+
+            dot.SetActive(false); // bool for setting active the dots when clicking the button
+
+            dotsPool.Add(dot); // Pooling method for the dots
 
             i++;
         }
 
-        //select initial type
+        // Select initial type
         SetNextType();
     }
 
+    // Void function for randomising and setting the next type of ball
     void SetNextType()
     {
-
+        // Access avery bubble in the array and set it to false
         foreach (var go in bubbles)
         {
-            go.SetActive(false);
+            go.SetActive(false); // 
         }
 
-        typeOfBalls = Random.Range(0, 8);
+        type = Random.Range(0, 8); 
 
-        bubbles[typeOfBalls].SetActive(true);
+        bubbles[type].SetActive(true); // Set the bubbles to true if selected
 
     }
 
@@ -83,46 +85,57 @@ public class CannonScript : MonoBehaviour
 
     }
 
+    // Handling the button Up
     void HandleTouchUp(Vector2 touch)
     {
-
+        // if dots trail is null - return its result
         if (dotsTrail == null || dotsTrail.Count < 2)
             return;
 
+        // De-activate the dots trail when the button is released
         foreach (var d in dotsPool)
             d.SetActive(false);
 
 
-        bulletProgress = 0.0f;
+        // 
+        bubbleProgress = 0.0f;
 
-        bullet.SetType((BubbleScript.BUBBLE_TYPE)typeOfBalls);
+        // Getting the type of balls that are stored within the enum Bubble_Type in the BubbleScript
+        bubble.SetType((BubbleScript.BUBBLE_TYPE)type);
        
-        bullet.gameObject.SetActive(true);
+        // 
+        bubble.gameObject.SetActive(true);
 
-        bullet.transform.position = transform.position;
+        // Transforming the bubble along the dots trail path
+        bubble.transform.position = transform.position;
 
+
+        // Path function
         InitPath();
 
-
+        // Setting the bubble[Reload a random bubble after releasing the button]
         SetNextType();
     }
 
+    // function for when a player is holding the button down and moving the mouse around
     void HandleTouchMove(Vector2 touch)
     {
-
-
-        if (bullet.gameObject.activeSelf)
+        // return the bubble's state result [ignore the parent's state]
+        if (bubble.gameObject.activeSelf)
             return;
 
+        // if dots trail is null - return its result
         if (dotsTrail == null)
         {
             return;
         }
 
+        // remove all the dotsTrail that have been destroyed from the vector
         dotsTrail.Clear();
 
-        foreach (var d in dotsPool)
-            d.SetActive(false);
+        // foreach loop for setting active state to false every dots in the pool
+        foreach (var dots in dotsPool)
+            dots.SetActive(false);
 
 
         Vector2 point = Camera.main.ScreenToWorldPoint(touch);
@@ -130,12 +143,16 @@ public class CannonScript : MonoBehaviour
         var direction = new Vector2(point.x - transform.position.x, point.y - transform.position.y);
 
 
+        // Shooting a raycast in the direction of the mouse
         RaycastHit2D hit = Physics2D.Raycast(transform.position, direction);
-        if (hit.collider != null && hit.collider.tag != "WalNulls")
-        {
 
+        // 
+        if (hit.collider != null)
+        {
+            // transform the dots trail along the raycast
             dotsTrail.Add(transform.position);
 
+            // if the raycast collides with the side walls, get direct
             if (hit.collider.tag == "SideWalls")
             {
                 DoRayCast(hit, direction);
@@ -152,34 +169,39 @@ public class CannonScript : MonoBehaviour
 
     void DoRayCast(RaycastHit2D previousHit, Vector2 directionIn)
     {
-
+        // previous hit - shoot another raycast from where the ray previously hit the wall
         dotsTrail.Add(previousHit.point);
 
 
+        // normalizing the raycast
         var normal = Mathf.Atan2(previousHit.normal.y, previousHit.normal.x);
 
+        // getting a new direction for the new raycast
         var newDirection = normal + (normal - Mathf.Atan2(directionIn.y, directionIn.x));
 
+        // reflecting the raycast[]
         var reflection = new Vector2(-Mathf.Cos(newDirection), -Mathf.Sin(newDirection));
 
+        // setting the collision point as a new cast point
         var newCastPoint = previousHit.point + (2 * reflection);
 
-        //		directionIn.Normalize ();
-        //		newCastPoint = new Vector2(previousHit.point.x + 2 * (-directionIn.x), previousHit.point.y + 2 * (directionIn.y));
-        //		reflection = new Vector2 (-directionIn.x, directionIn.y);
 
+        // cast a new ray and reflect it if it collides with anything
         var hit2 = Physics2D.Raycast(newCastPoint, reflection);
         if (hit2.collider != null)
         {
+            // 
             if (hit2.collider.tag == "SideWalls")
             {
-                //shoot another raycast
+                //shoot another raycast then reflect it
                 DoRayCast(hit2, reflection);
             }
             else
             {
+                // add to the list
                 dotsTrail.Add(hit2.point);
 
+                // draw the dots trail path
                 DrawPaths();
             }
         }
@@ -193,18 +215,22 @@ public class CannonScript : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-
-        if (bullet.gameObject.activeSelf)
+        // setting the bubble game object's state
+        if (bubble.gameObject.activeSelf)
         {
 
-            bulletProgress += bulletIncrement;
+            bubbleProgress += bulletIncrement;
 
-            if (bulletProgress > 1)
+            if (bubbleProgress > 1)
             {
+
+                // remove a dot trail at zero[0]
                 dotsTrail.RemoveAt(0);
+
+                // set false if the dot count is less than 2
                 if (dotsTrail.Count < 2)
                 {
-                    bullet.gameObject.SetActive(false);
+                    bubble.gameObject.SetActive(false);
                     return;
                 }
                 else
@@ -213,17 +239,19 @@ public class CannonScript : MonoBehaviour
                 }
             }
 
-            var px = dotsTrail[0].x + bulletProgress * (dotsTrail[1].x - dotsTrail[0].x);
-            var py = dotsTrail[0].y + bulletProgress * (dotsTrail[1].y - dotsTrail[0].y);
+            var px = dotsTrail[0].x + bubbleProgress * (dotsTrail[1].x - dotsTrail[0].x);
+            var py = dotsTrail[0].y + bubbleProgress * (dotsTrail[1].y - dotsTrail[0].y);
 
-            bullet.transform.position = new Vector2(px, py);
+            bubble.transform.position = new Vector2(px, py);
 
             return;
         }
 
+        // return the trail's result
         if (dotsTrail == null)
             return;
 
+        // Inputs
         if (Input.touches.Length > 0)
         {
 
@@ -239,7 +267,7 @@ public class CannonScript : MonoBehaviour
             }
             else if (touch.phase == TouchPhase.Moved || touch.phase == TouchPhase.Stationary)
             {
-                HandleTouchMove(touch.position);
+                HandleTouchUp(touch.position);
             }
             HandleTouchMove(touch.position);
             return;
@@ -260,17 +288,19 @@ public class CannonScript : MonoBehaviour
         }
     }
 
+    // function for drawing the trail path[dotted line]
     void DrawPaths()
     {
 
         if (dotsTrail.Count > 1)
         {
-
+            // set false for every dot in the pool array
             foreach (var d in dotsPool)
                 d.SetActive(false);
 
             int index = 0;
 
+            // 
             for (var i = 1; i < dotsTrail.Count; i++)
             {
                 DrawSubPath(i - 1, i, ref index);
@@ -278,17 +308,19 @@ public class CannonScript : MonoBehaviour
         }
     }
 
+    // function drawing the subpath
     void DrawSubPath(int start, int end, ref int index)
     {
-        var pathLength = Vector2.Distance(dotsTrail[start], dotsTrail[end]);
+        var pathLength = Vector2.Distance(dotsTrail[start], dotsTrail[end]); // trail's leght
 
 
-        int numDots = Mathf.RoundToInt((float)pathLength / dotGap);
+        int numDots = Mathf.RoundToInt((float)pathLength / dotGap); // getting the space between the dots
 
-        float dotProgress = 1.0f / numDots;
+        float dotProgress = 1.0f / numDots; // 
 
         var p = 0.0f;
 
+        //
         while (p < 1)
         {
             var px = dotsTrail[start].x + p * (dotsTrail[end].x - dotsTrail[start].x);
@@ -309,19 +341,22 @@ public class CannonScript : MonoBehaviour
         }
     }
 
+
     void InitPath()
     {
-        var start = dotsTrail[0];
+        var start = dotsTrail[0]; //
 
-        var end = dotsTrail[1];
+        var end = dotsTrail[1]; //
 
-        var length = Vector2.Distance(start, end);
+        var length = Vector2.Distance(start, end); // trail length
 
         var iterations = length / 0.30f; // Adjust how fast you want the bubble to move
 
-        bulletProgress = 0.0f;
+        bubbleProgress = 0.0f; // 
 
-        bulletIncrement = 1.0f / iterations;
+        bulletIncrement = 1.0f / iterations; // 
     }
+
+    // I left out other sections because I assume you know, Ryan.
 
 }
