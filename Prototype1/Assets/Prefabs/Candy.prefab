@@ -234,6 +234,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   bubbleState: 0
   manager: {fileID: 0}
+  popFX: {fileID: 2570173776662994414, guid: 565a72f0329655d4fba503d74f8cf704, type: 3}
   preset: 0
   sameTypeConnectedBubbles: []
   verticalValues: []

@@ -53,7 +53,8 @@ public class RyanCannon : MonoBehaviour
 
 
         if (Input.GetKeyDown(KeyCode.Mouse0)){
-                fireBubble();
+           
+            fireBubble();
             }
 
     }
@@ -66,13 +67,15 @@ public class RyanCannon : MonoBehaviour
 
     public void fireBubble()
     {
-
+        
         currentBubble = ammoList.ammoList.Peek();
 
         BubbleStateHolder = currentBubble.GetComponent<RyanBubble>();
 
         if (BubbleStateHolder.bubbleState == RyanBubble.BubbleState.Waiting) {
-            
+            //Play shooting sound
+            FindObjectOfType<AudioManager>().Play("Shoot");
+
             BubbleStateHolder.bubbleState = RyanBubble.BubbleState.Movement;
 
             currentBubble.GetComponent<Rigidbody2D>().AddForce(mousPos * startBallSpeed);

@@ -1,0 +1,112 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &5645995517273142283
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 5645995517273142261}
+  - component: {fileID: 5645995517273142282}
+  m_Layer: 0
+  m_Name: AudioManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &5645995517273142261
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5645995517273142283}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &5645995517273142282
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5645995517273142283}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3c41437905fcd3949a8ca5a3c33b5bcc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  sounds:
+  - soundClip: {fileID: 8300000, guid: 3664c808480f6304194ac9aef9648c3d, type: 3}
+    name: BG Sound
+    volume: 0.2
+    pitch: 1
+    loop: 1
+    source: {fileID: 0}
+  - soundClip: {fileID: 8300000, guid: 10e8bd103882a5744a827058ad775b14, type: 3}
+    name: Shoot
+    volume: 0.8
+    pitch: 1
+    loop: 0
+    source: {fileID: 0}
+  - soundClip: {fileID: 8300000, guid: dfa250a4851fc3f4d819965daf3a8ebd, type: 3}
+    name: Bounce
+    volume: 0.5
+    pitch: 1
+    loop: 0
+    source: {fileID: 0}
+  - soundClip: {fileID: 8300000, guid: 2552b359d3a233247b441d801ae308af, type: 3}
+    name: No Match
+    volume: 1
+    pitch: 1
+    loop: 0
+    source: {fileID: 0}
+  - soundClip: {fileID: 8300000, guid: 33bab4d98e9c25c48bfe0f1ee98942e4, type: 3}
+    name: Match
+    volume: 1
+    pitch: 1
+    loop: 0
+    source: {fileID: 0}
+  - soundClip: {fileID: 8300000, guid: d6a14d6c200d03049ba0f87e90dfefd2, type: 3}
+    name: Pop
+    volume: 1
+    pitch: 1
+    loop: 0
+    source: {fileID: 0}
+  - soundClip: {fileID: 8300000, guid: 8d49b834654edf8418b588394c5f6dbb, type: 3}
+    name: Explosion
+    volume: 1
+    pitch: 1
+    loop: 0
+    source: {fileID: 0}
+  - soundClip: {fileID: 8300000, guid: 71c19e51af285554e88e330ddbc5b1b5, type: 3}
+    name: Unwrap
+    volume: 0.4
+    pitch: 1
+    loop: 0
+    source: {fileID: 0}
+  - soundClip: {fileID: 8300000, guid: 33bab4d98e9c25c48bfe0f1ee98942e4, type: 3}
+    name: Match
+    volume: 1
+    pitch: 1
+    loop: 0
+    source: {fileID: 0}
+  - soundClip: {fileID: 0}
+    name: Lose
+    volume: 1
+    pitch: 1
+    loop: 1
+    source: {fileID: 0}
+  - soundClip: {fileID: 8300000, guid: 1eba834bdb4d7e842a63c01fa5e7ef77, type: 3}
+    name: Win
+    volume: 1
+    pitch: 1
+    loop: 1
+    source: {fileID: 0}

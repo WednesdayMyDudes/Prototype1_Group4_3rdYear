@@ -10,6 +10,8 @@ public class RyanBubble : MonoBehaviour
     public BubbleState bubbleState;
 
     public GameObject manager;
+    //Visual FX particles
+    public GameObject popFX;
 
     CheckWin checkLoss;
  
@@ -84,13 +86,16 @@ public class RyanBubble : MonoBehaviour
 
 
             Destroy(currentBody);
+            //Play Bounce off marshmellow sound
+            FindObjectOfType<AudioManager>().Play("Bounce");
+
             transform.localRotation = Quaternion.identity;
             Vector3 thePosition = transform.localPosition;
 
             thePosition.x = Mathf.Round(thePosition.x);
             thePosition.y = Mathf.Floor(thePosition.y);
 
-            Debug.Log("[OnCollisionEnter] Before Round:" + thePosition);
+            //Debug.Log("[OnCollisionEnter] Before Round:" + thePosition);
             if (thePosition.y % 2 >= 1)
             {
                 if (thePosition.x + horizontalOffset >= maximunHorizontalValue)
@@ -140,6 +145,9 @@ public class RyanBubble : MonoBehaviour
                 foreach (GameObject bubble in sameTypeConnectedBubbles)
                 {
 
+                    FindObjectOfType<AudioManager>().Play("Match");    //Play bubble-matched sound
+                    StartCoroutine(Delay());
+                    Instantiate(popFX, transform.position, Quaternion.identity); //Instantiate Bubble po VFX particles
                     Destroy(bubble);
                 }
 
@@ -151,6 +159,8 @@ public class RyanBubble : MonoBehaviour
         }
         if (bubbleCollision.gameObject.tag.Equals("Barrier") )
         {
+            //Play bounce sound if collided with berrier
+                FindObjectOfType<AudioManager>().Play("Bounce");
 
             if (bubbleState == BubbleState.Movement)
             {
@@ -204,8 +214,8 @@ public class RyanBubble : MonoBehaviour
             bubbleCheck = bubbleCollision.gameObject.GetComponent<RyanBubble>();
 
             if (bubbleCheck.bubbleState == BubbleState.Stopped) {
+                
 
-               
 
                 if (bubbleState == BubbleState.Movement)
                 {
@@ -217,6 +227,9 @@ public class RyanBubble : MonoBehaviour
 
 
                     Destroy(currentBody);
+                    //Play shooting sound
+                    FindObjectOfType<AudioManager>().Play("Pop");
+
                     transform.localRotation = Quaternion.identity;
                     Vector3 thePosition = transform.localPosition;
 
@@ -240,7 +253,7 @@ public class RyanBubble : MonoBehaviour
                       {
                       Debug.Log("[OnCollisionEnter]End Game");
                         //SceneManager.LoadScene("GameOver");
-
+                        //Play Lose Sound
                         checkLoss.callLoss();
 
                      
@@ -264,6 +277,9 @@ public class RyanBubble : MonoBehaviour
 
         if (bubbleCollision.gameObject.tag.Equals("Side"))
         {
+            //Play bounce sound if collided with berrier
+            FindObjectOfType<AudioManager>().Play("Bounce");
+
             Debug.Log("[OnCollisionEnter]Collision contacts: " + bubbleCollision.contacts[0].normal);
             currentBody.velocity = Vector3.Reflect(transform.localPosition, bubbleCollision.contacts[0].normal);
         }
@@ -321,6 +337,10 @@ public class RyanBubble : MonoBehaviour
         }
         return newPosition;
     }
-
-
+    //Sound IEnumerator
+    IEnumerator Delay()
+    {
+        yield return new WaitForSeconds(.3f);
+        FindObjectOfType<AudioManager>().Play("Unwrap");    //Play bounce sound
+    }
 }

@@ -90,8 +90,9 @@ public class CheckWin : MonoBehaviour
     }
 
     public IEnumerator callLevel2() {
-
-          yield return new WaitForSeconds(1f);
+        //Play Victory sound
+        FindObjectOfType<AudioManager>().Play("Win");
+        yield return new WaitForSeconds(5f);        //Wait for 5 sec for the win sound for play
 
         manager.goToLevel2();
 
