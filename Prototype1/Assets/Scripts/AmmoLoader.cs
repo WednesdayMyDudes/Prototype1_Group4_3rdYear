@@ -6,71 +6,83 @@ public class AmmoLoader : MonoBehaviour
 {
     public List<GameObject> ammoTypes;
 
-    public GameObject tempBubble; //temporary until number of bubble types have been confirmed
-
     public Queue<GameObject> ammoList;
+
+    int selectNumber;
+
+    GameObject currentBubble;
+    GameObject newBubble;
+
+    RyanBubble currentBullet;
 
     
 
-    GameObject Bubble;
-
     // Start is called before the first frame update
-    void Start()
+    public void setAmmo()
     {
 
         ammoList = new Queue<GameObject>();
 
-        for (int i = 0; i <= 5; i++) {
 
-           Bubble = Instantiate(tempBubble,new Vector3((float) -i,0,0),Quaternion.identity);
+        
 
-           ammoList.Enqueue(Bubble);
+          selectNumber = Random.Range(0, ammoTypes.Count);
+
+          
+
+          newBubble = Instantiate(ammoTypes[selectNumber], new Vector3(gameObject.transform.position.x, gameObject.transform.position.y, gameObject.transform.position.z), Quaternion.identity);
+
+        currentBullet = newBubble.GetComponent<RyanBubble>();
+
+        currentBullet.bubbleState = RyanBubble.BubbleState.Waiting;
+
+           ammoList.Enqueue(newBubble);
         }
-    }
+    
 
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Mouse0)) {
+       // if (Input.GetKeyDown(KeyCode.Mouse0)) { test script for ammo loading and usage
 
-            useAmmo();
+            //useAmmo();
 
-        }
-        if (Input.GetKeyDown(KeyCode.Mouse1))
-        {
+          //  addAmmo();
 
-            addAmmo();
+        //}
+       
 
-        }
+         
+
+
     }
 
     public void addAmmo() {
+        selectNumber = Random.Range(0, ammoTypes.Count);
 
-        Bubble = Instantiate(tempBubble, new Vector3(-(float) ammoList.Count, 0, 0), Quaternion.identity);
+        newBubble = Instantiate(ammoTypes[selectNumber], new Vector3(gameObject.transform.position.x, gameObject.transform.position.y,gameObject.transform.position.z), Quaternion.identity);
 
-        ammoList.Enqueue(Bubble);
+        ammoList.Enqueue(newBubble);
 
-    }
-
-    public void useAmmo() {
-
-        Bubble = (GameObject)ammoList.Dequeue();
-
-        Destroy(Bubble);
-
-        updateAmmoPos();
+       
 
     }
 
-    public void updateAmmoPos() {
+    public IEnumerator useAmmo() {
 
-        GameObject[] sortingList = new GameObject[ammoList.Count];
+        yield return new WaitForSeconds(0.5f);
 
-        ammoList.CopyTo(sortingList,0);
+        currentBubble = (GameObject) ammoList.Dequeue();
 
-        for (int i = 0; i < sortingList.Length; i++) {
-            sortingList[i].transform.position = new Vector2(-(float)i,0);
-        }
+       // updateAmmoPos();
+
+       addAmmo();
+
+       
 
     }
-}
+
+   
+
+    }
+

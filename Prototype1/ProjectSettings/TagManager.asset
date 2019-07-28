@@ -3,7 +3,13 @@
 --- !u!78 &1
 TagManager:
   serializedVersion: 2
-  tags: []
+  tags:
+  - CupCake
+  - Donut
+  - Candy
+  - bullet
+  - Side
+  - Barrier
   layers:
   - Default
   - TransparentFX

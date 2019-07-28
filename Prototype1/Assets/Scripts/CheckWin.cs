@@ -1,19 +1,39 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class CheckWin : MonoBehaviour
 {
+
+    GameObject transitionHolder;
+    TransitionManager manager;
+
+    Scene currentScene;
+
+    public GameObject winHolder;
+    public GameObject loseHolder;
+
     // Start is called before the first frame update
     void Start()
     {
+        transitionHolder = GameObject.Find("SceneManager");
+        manager = transitionHolder.GetComponent<TransitionManager>();
 
+        currentScene = SceneManager.GetActiveScene();
     }
 
     // Update is called once per frame
     void Update()
     {
 
+    }
+
+    public void callLoss() {
+
+        loseHolder.SetActive(true);
+
+        StartCoroutine(callRestart());
     }
 
     public void callCheck() {
@@ -42,10 +62,47 @@ public class CheckWin : MonoBehaviour
         if (sum == 1)
         {
 
-            Debug.Log("win" + sum);
+            // Debug.Log("win" + sum);
 
+            winHolder.SetActive(true);
+
+            if (currentScene.name.Equals("tutorial01_lvl1")) {
+
+               
+                StartCoroutine(callLevel2());
+            }
+
+            if (currentScene.name.Equals("tutorial02_lvl2")) {
+
+                StartCoroutine(callMenu());
+            }
         }
 
         else { Debug.Log("playing"); }
     }
+
+    public IEnumerator callRestart() {
+
+        yield return new WaitForSeconds(1f);
+
+        manager.resetLevel();
+
+    }
+
+    public IEnumerator callLevel2() {
+
+          yield return new WaitForSeconds(1f);
+
+        manager.goToLevel2();
+
+    }
+
+    public IEnumerator callMenu() {
+
+        yield return new WaitForSeconds(1f);
+
+        manager.goToMenu();
+    }
+
+   
 }

@@ -10,6 +10,8 @@ public class RyanBubble : MonoBehaviour
     public BubbleState bubbleState;
 
     public GameObject manager;
+
+    CheckWin checkLoss;
  
 
     bool hasCollided;
@@ -55,7 +57,7 @@ public class RyanBubble : MonoBehaviour
 
         manager.GetComponent<BubbleManager>().inGameBubbleList.Add(this.gameObject);
 
-        
+        checkLoss = manager.GetComponent<CheckWin>();
 
         if (gameObject.transform.position.y < 6)
         {
@@ -234,10 +236,14 @@ public class RyanBubble : MonoBehaviour
                         if (thePosition.x + horizontalOffset >= maximunHorizontalValue)
                             thePosition.x = maximunHorizontalValue - horizontalOffset;
                     }
-                     if (thePosition.y <= 6)
+                     if (thePosition.y < 6)
                       {
                       Debug.Log("[OnCollisionEnter]End Game");
-                      //SceneManager.LoadScene("GameOver");
+                        //SceneManager.LoadScene("GameOver");
+
+                        checkLoss.callLoss();
+
+                     
                    }
 
 
